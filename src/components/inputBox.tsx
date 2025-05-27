@@ -1,15 +1,15 @@
 import React, { useState, useRef } from 'react';
-import RecordRTC, { StereoAudioRecorder } from 'recordrtc';
+// import RecordRTC, { StereoAudioRecorder } from 'recordrtc';
 
 interface Props {
   onSend: (text: string) => void;
   onAudioSend?: (audioBlob: Blob) => void;
 }
 
-const InputBox: React.FC<Props> = ({ onSend, onAudioSend }) => {
+const InputBox: React.FC<Props> = ({ onSend }) => {
   const [text, setText] = useState('');
-  const [recording, setRecording] = useState(false);
-  const recorderRef = useRef<InstanceType<typeof RecordRTC> | null>(null);
+  // const [recording, setRecording] = useState(false);
+  // const recorderRef = useRef<InstanceType<typeof RecordRTC> | null>(null);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,35 +17,35 @@ const InputBox: React.FC<Props> = ({ onSend, onAudioSend }) => {
     setText('');
   };
 
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  // const startRecording = async () => {
+  //   try {
+  //     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      const recorder = new RecordRTC(stream, {
-        type: 'audio',
-        mimeType: 'audio/wav',
-        recorderType: StereoAudioRecorder,
-        desiredSampRate: 16000,
-        numberOfAudioChannels: 1,
-      });
+  //     const recorder = new RecordRTC(stream, {
+  //       type: 'audio',
+  //       mimeType: 'audio/wav',
+  //       recorderType: StereoAudioRecorder,
+  //       desiredSampRate: 16000,
+  //       numberOfAudioChannels: 1,
+  //     });
 
-      recorder.startRecording();
-      recorderRef.current = recorder;
-      setRecording(true);
-    } catch (err) {
-      console.error('Microphone access error:', err);
-    }
-  };
+  //     recorder.startRecording();
+  //     recorderRef.current = recorder;
+  //     setRecording(true);
+  //   } catch (err) {
+  //     console.error('Microphone access error:', err);
+  //   }
+  // };
 
-  const stopRecording = () => {
-    recorderRef.current?.stopRecording(() => {
-      const audioBlob = recorderRef.current?.getBlob();
-      if (audioBlob && onAudioSend) {
-        onAudioSend(audioBlob);
-      }
-      setRecording(false);
-    });
-  };
+  // const stopRecording = () => {
+  //   recorderRef.current?.stopRecording(() => {
+  //     const audioBlob = recorderRef.current?.getBlob();
+  //     if (audioBlob && onAudioSend) {
+  //       onAudioSend(audioBlob);
+  //     }
+  //     setRecording(false);
+  //   });
+  // };
 
   return (
     <form onSubmit={handleSend} className="input-box">
@@ -56,13 +56,7 @@ const InputBox: React.FC<Props> = ({ onSend, onAudioSend }) => {
         onChange={(e) => setText(e.target.value)}
       />
       <button type="submit">Send</button>
-      <button
-        type="button"
-        onClick={recording ? stopRecording : startRecording}
-        className={`record-btn ${recording ? 'recording' : ''}`}
-      >
-        {recording ? 'Stop' : '🎤'}
-      </button>
+     
     </form>
   );
 };
