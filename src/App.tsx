@@ -10,14 +10,16 @@ const App: React.FC = () => {
   const [user, setUser] = useState<UserInfo | null>();
   const [count, setCount] = useState(0);
   const [messages, setMessages] = useState<Message[]>([]);
-  console.log('User:', user);
+
+
+  const serverUrl = process.env.REACT_APP_SERVER_URL 
 
   useEffect(() => {
     const fetchMessages = async () => {
       if (user) {
         console.log('Fetching messages for user:');
         try {
-          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/chats?user_id=${user.phone}`);
+          const response = await axios.get(`${serverUrl}/api/chats?user_id=${user.phone}`);
            // Transform API response into Message[]
         const formattedMessages: Message[] = response.data.flatMap((chat: any) => [
           { sender: user.name, text: chat.user_input },
@@ -32,7 +34,7 @@ const App: React.FC = () => {
     };
 
     fetchMessages();
-  }, [user,count]);
+  }, [user,count,serverUrl]);
 
 
 
@@ -40,7 +42,7 @@ const App: React.FC = () => {
     const userMessage: Message = { sender: user?.phone, text };
     setMessages(prev => [...prev, userMessage]);
 
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
+    const response = await axios.post(`${serverUrl}/api/chat`, {
       user_id: user?.phone,
       message: text
     });
