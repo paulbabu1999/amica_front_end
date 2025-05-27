@@ -17,7 +17,7 @@ const App: React.FC = () => {
       if (user) {
         console.log('Fetching messages for user:');
         try {
-          const response = await axios.get(`http://localhost:5050/api/chats?user_id=${user.phone}`);
+          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/chats?user_id=${user.phone}`);
            // Transform API response into Message[]
         const formattedMessages: Message[] = response.data.flatMap((chat: any) => [
           { sender: user.name, text: chat.user_input },
@@ -40,7 +40,7 @@ const App: React.FC = () => {
     const userMessage: Message = { sender: user?.phone, text };
     setMessages(prev => [...prev, userMessage]);
 
-    const response = await axios.post('http://localhost:5050/api/chat', {
+    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
       user_id: user?.phone,
       message: text
     });
