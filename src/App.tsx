@@ -39,8 +39,6 @@ const App: React.FC = () => {
 
 
   const handleSendMessage = async (text: string) => {
-    const userMessage: Message = { sender: user?.phone, text };
-    setMessages(prev => [...prev, userMessage]);
 
     const response = await axios.post(`${serverUrl}/api/chat`, {
       user_id: user?.phone,
@@ -50,8 +48,23 @@ const App: React.FC = () => {
 
   };
   const handleAudioSend = (audioBlob: Blob) => {
-    setMessages((prev) => [...prev, { sender: 'user', audio: audioBlob }]);
 
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'audio.wav');
+    formData.append('user_id', user?.phone || '');
+
+    axios.post(`${serverUrl}/api/audio`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(response => {
+     
+      setCount(count + 1);
+    })
+    .catch(error => {
+      console.error('Error sending audio message:', error);
+    });
   };
   
 
